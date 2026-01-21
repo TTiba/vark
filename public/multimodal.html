@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multimodalidade - O Pulo do Gato</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="max-w-6xl mx-auto">
+            <!-- Back Button -->
+            <header class="mb-10">
+                <div class="mb-6">
+                    <a href="/dashboard.html"
+                        class="inline-flex items-center gap-2 text-violet-600 font-bold hover:text-violet-800 transition-colors">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        Voltar
+                    </a>
+                </div>
+
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+                        Metodologia VARK: <span class="text-violet-500">Multimodalidade</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 max-w-3xl">
+                        A maioria dos alunos não possui apenas um perfil dominante. Quando um estudante é
+                        <strong> bimodal</strong>, ele processa informações de forma mais rica e integrada.
+                        Explore as 6 combinações possíveis abaixo.
+                    </p>
+                </div>
+            </header>
+
+            <!-- Legend / Basic Styles -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                <!-- Visual -->
+                <div class="bg-blue-50 border border-blue-300 p-4 rounded-xl flex items-center gap-3">
+                    <div class="text-blue-400 bg-white p-2 rounded-lg shadow-sm">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-500 uppercase">V</div>
+                        <div class="text-sm font-semibold text-slate-800">Visual</div>
+                    </div>
+                </div>
+                <!-- Auditivo -->
+                <div class="bg-emerald-50 border border-emerald-300 p-4 rounded-xl flex items-center gap-3">
+                    <div class="text-emerald-400 bg-white p-2 rounded-lg shadow-sm">
+                        <i data-lucide="ear" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-500 uppercase">A</div>
+                        <div class="text-sm font-semibold text-slate-800">Auditivo</div>
+                    </div>
+                </div>
+                <!-- Leitura/Escrita -->
+                <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl flex items-center gap-3">
+                    <div class="text-amber-400 bg-white p-2 rounded-lg shadow-sm">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-500 uppercase">R</div>
+                        <div class="text-sm font-semibold text-slate-800">Leitura/Escrita</div>
+                    </div>
+                </div>
+                <!-- Cinestésico -->
+                <div class="bg-red-50 border border-red-300 p-4 rounded-xl flex items-center gap-3">
+                    <div class="text-red-400 bg-white p-2 rounded-lg shadow-sm">
+                        <i data-lucide="hand" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-500 uppercase">K</div>
+                        <div class="text-sm font-semibold text-slate-800">Cinestésico</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Combinations Grid -->
+            <div class="grid grid-cols-1 gap-6">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i data-lucide="shuffle" class="w-5 h-5 text-violet-500 inline mr-2"></i>
+                        Combinações 2 a 2
+                    </h2>
+                    <span class="text-xs font-medium bg-slate-200 text-slate-600 px-2 py-1 rounded-full uppercase">
+                        Total: 6 Perfis Mistos
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="combinations-container">
+                    <!-- Cards will be injected by JS -->
+                </div>
+            </div>
+
+            <!-- Strategic Footer -->
+            <footer class="mt-12 p-6 bg-violet-900 rounded-2xl text-white">
+                <h3 class="text-xl font-bold mb-3 flex items-center gap-2">
+                    <i data-lucide="target" class="w-6 h-6 text-violet-300"></i>
+                    Estratégia para o Professor
+                </h3>
+                <p class="text-violet-100 text-sm leading-relaxed mb-4">
+                    Para alunos multimodais, o segredo não é oferecer "uma coisa ou outra", mas sim
+                    integrar as modalidades. Um aluno VR (Visual/Leitura) não quer apenas um vídeo
+                    ou apenas um texto; ele quer um vídeo com legendas bem estruturadas ou um texto
+                    com diagramas que espelham o que ele está lendo.
+                </p>
+                <div
+                    class="inline-flex items-center px-3 py-1 bg-violet-800 rounded-lg text-xs font-medium text-violet-200">
+                    Dica: Varie a entrega durante a mesma aula para atingir múltiplos perfis simultaneamente.
+                </div>
+            </footer>
+        </div>
+
+        <!-- Data and Script -->
+        <script>
+            const PROFILES = {
+                V: { id: 'V', icon: 'eye', color: 'text-blue-400', bg: 'bg-blue-50' },
+                A: { id: 'A', icon: 'ear', color: 'text-emerald-400', bg: 'bg-emerald-50' },
+                R: { id: 'R', icon: 'book-open', color: 'text-amber-400', bg: 'bg-amber-50' },
+                K: { id: 'K', icon: 'hand', color: 'text-red-400', bg: 'bg-red-50' }
+            };
+
+            const COMBINATIONS = [
+                {
+                    ids: ['V', 'A'],
+                    title: 'Visual + Auditivo (VA)',
+                    learningStyle: 'O aluno prefere estímulos que combinam o que vê com o que ouve. Ele retém informações melhor quando há uma narrativa visual acompanhando uma explicação verbal.',
+                    howTheyLearn: ['Aprende rápido com vídeos e documentários.', 'Beneficia-se de palestras que utilizam suportes visuais dinâmicos.', 'Consegue "visualizar" o que o professor está narrando.'],
+                    suggestions: ['Aulas baseadas em vídeos explicativos e animações.', 'Uso de apresentações (Slides) com pouco texto e muitas imagens e narração.', 'Debates sobre filmes ou peças visuais.']
+                },
+                {
+                    ids: ['V', 'R'],
+                    title: 'Visual + Leitura/Escrita (VR)',
+                    learningStyle: 'Este perfil busca a estrutura. Ele precisa ver a informação organizada e, ao mesmo tempo, ter o texto para consolidar o entendimento.',
+                    howTheyLearn: ['Adora infográficos com legendas detalhadas.', 'Estuda melhor lendo livros com diagramas e tabelas.', 'Geralmente tira notas organizadas visualmente (sublinhados, cores).'],
+                    suggestions: ['Criação de Mapas Mentais com definições textuais.', 'Leitura de Manuais com ilustrações técnicas.', 'Atividades de "anotar em cima de diagramas".']
+                },
+                {
+                    ids: ['V', 'K'],
+                    title: 'Visual + Cinestésico (VK)',
+                    learningStyle: 'Aprende vendo como se faz e tentando reproduzir. A imagem serve como guia para a ação física.',
+                    howTheyLearn: ['Aprende observando demonstrações práticas.', 'Prefere tutoriais em vídeo que mostram "passo a passo" manual.', 'Conecta imagens mentais com sensações físicas.'],
+                    suggestions: ['Laboratórios de ciências com guias visuais de segurança e procedimento.', 'Uso de Realidade Virtual (VR) para exploração de ambientes.', 'Construção de maquetes baseadas em plantas ou desenhos.']
+                },
+                {
+                    ids: ['A', 'R'],
+                    title: 'Auditivo + Leitura/Escrita (AR)',
+                    learningStyle: 'Focado no código linguístico. O som da voz e o símbolo escrito são as ferramentas principais de processamento.',
+                    howTheyLearn: ['Gosta de ouvir explicações e depois ler sobre o assunto.', 'Tende a ler em voz alta para entender melhor.', 'Excelente em transcrever discussões ou transformar áudios em textos.'],
+                    suggestions: ['Seminários seguidos de produção de ensaios ou resumos.', 'Uso de Audiobooks acompanhados do livro físico.', 'Ditados e discussões de textos literários.']
+                },
+                {
+                    ids: ['A', 'K'],
+                    title: 'Auditivo + Cinestésico (AK)',
+                    learningStyle: 'Aprende através do diálogo e da experimentação. A troca verbal durante a ação é o que fixa o conteúdo.',
+                    howTheyLearn: ['Gosta de trabalhar em grupo onde pode falar enquanto faz.', 'Consegue memorizar instruções faladas enquanto se movimenta.', 'Aprende muito através de Role-playing (teatro/simulação).'],
+                    suggestions: ['Atividades de campo com instruções via áudio ou rádio.', 'Jogos educativos que exijam movimento e comunicação verbal.', 'Dramatizações de eventos históricos ou situações sociais.']
+                },
+                {
+                    ids: ['R', 'K'],
+                    title: 'Leitura/Escrita + Cinestésico (RK)',
+                    learningStyle: 'Aprende documentando a prática. O registro escrito da experiência física é o que traz o entendimento profundo.',
+                    howTheyLearn: ['Prefere "aprender fazendo" e depois escrever um relatório.', 'Seguir instruções escritas para montar algo ou realizar um experimento.', 'Diários de campo são ferramentas poderosas aqui.'],
+                    suggestions: ['Relatórios de laboratório ou estágios práticos.', 'Criação de blogs de "Como Fazer" (DIY).', 'Pesquisas de campo que envolvam coleta de dados e escrita imediata.']
+                }
+            ];
+
+            function renderCards() {
+                const container = document.getElementById('combinations-container');
+
+                COMBINATIONS.forEach(combo => {
+                    const p1 = PROFILES[combo.ids[0]];
+                    const p2 = PROFILES[combo.ids[1]];
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl border border-slate-200 transition-all duration-300 overflow-hidden hover:shadow-md";
+                    card.innerHTML = `
+                    <div class="p-6 cursor-pointer hover:bg-slate-50 flex items-center justify-between" onclick="toggleCard(this)">
+                        <div class="flex items-center gap-4">
+                            <div class="flex -space-x-3">
+                                <div class="p-3 rounded-full ${p1.bg} ${p1.color} border-2 border-white z-10 relative">
+                                    <i data-lucide="${p1.icon}" class="w-6 h-6"></i>
+                                </div>
+                                <div class="p-3 rounded-full ${p2.bg} ${p2.color} border-2 border-white z-0 relative">
+                                    <i data-lucide="${p2.icon}" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">${combo.title}</h3>
+                                <p class="text-sm text-slate-500">Multimodalidade (Bimodal)</p>
+                            </div>
+                        </div>
+                        <div class="transform transition-transform duration-300 icon-arrow">
+                            <i data-lucide="chevron-down" class="text-slate-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="content hidden px-6 pb-6 pt-2 bg-white">
+                         <div class="space-y-6 border-t border-slate-100 pt-4 mt-2">
+                             <section>
+                                 <div class="flex items-center gap-2 mb-2 text-violet-600 font-semibold uppercase text-xs tracking-wider">
+                                     <i data-lucide="info" class="w-4 h-4"></i> Perfil de Aprendizagem
+                                 </div>
+                                 <p class="text-slate-600 leading-relaxed text-sm">${combo.learningStyle}</p>
+                             </section>
+
+                             <div class="grid md:grid-cols-2 gap-6">
+                                 <section class="bg-slate-50 p-4 rounded-xl">
+                                     <div class="flex items-center gap-2 mb-3 text-slate-800 font-semibold text-sm">
+                                         <i data-lucide="target" class="w-4 h-4 text-orange-500"></i> Como ele aprende
+                                     </div>
+                                     <ul class="space-y-2">
+                                         ${combo.howTheyLearn.map(item => `
+                                            <li class="text-sm text-slate-600 flex items-start gap-2">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-orange-300 mt-1.5 shrink-0"></span>${item}
+                                            </li>
+                                         `).join('')}
+                                     </ul>
+                                 </section>
+
+                                 <section class="bg-blue-50 p-4 rounded-xl">
+                                     <div class="flex items-center gap-2 mb-3 text-slate-800 font-semibold text-sm">
+                                         <i data-lucide="lightbulb" class="w-4 h-4 text-blue-500"></i> Sugestões
+                                     </div>
+                                     <ul class="space-y-2">
+                                          ${combo.suggestions.map(item => `
+                                            <li class="text-sm text-slate-700 flex items-start gap-2">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-blue-300 mt-1.5 shrink-0"></span>${item}
+                                            </li>
+                                         `).join('')}
+                                     </ul>
+                                 </section>
+                             </div>
+                         </div>
+                    </div>
+                `;
+                    container.appendChild(card);
+                });
+
+                lucide.createIcons();
+            }
+
+            function toggleCard(header) {
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('.icon-arrow');
+
+                // Toggle Display
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    arrow.classList.add('rotate-180');
+                    header.parentElement.classList.add('shadow-lg', 'border-violet-200');
+                } else {
+                    content.classList.add('hidden');
+                    arrow.classList.remove('rotate-180');
+                    header.parentElement.classList.remove('shadow-lg', 'border-violet-200');
+                }
+            }
+
+            renderCards();
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard VARK - Estilos de Aprendizagem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .vark-card {
+            transition: all 0.3s ease;
+        }
+
+        .vark-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-12 text-center relative">
+            <a href="/"
+                class="inline-flex items-center gap-2 text-violet-600 font-bold hover:text-violet-800 transition-colors absolute left-0 top-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+                Voltar aos resultados
+            </a>
+            <h1 class="text-4xl font-bold text-slate-900 mb-4 pt-8 md:pt-0">O Modelo VARK</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Desenvolvido por Neil Fleming, o modelo VARK identifica as preferências sensoriais das pessoas para
+                processar informações. Entender seu perfil ajuda a otimizar o tempo e a qualidade do estudo.
+            </p>
+        </header>
+
+        <!-- Overview Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Visual Card (Pastel Blue) -->
+            <button onclick="showTab('visual')"
+                class="vark-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-300 hover:shadow-md text-left">
+                <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl mb-1">Visual</h3>
+                <p class="text-sm text-slate-500">Aprende através de mapas, gráficos e diagramas.</p>
+            </button>
+
+            <!-- Aural Card (Pastel Emerald) -->
+            <button onclick="showTab('aural')"
+                class="vark-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-300 hover:shadow-md text-left">
+                <div class="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl mb-1">Auditivo</h3>
+                <p class="text-sm text-slate-500">Aprende ouvindo, discutindo e falando.</p>
+            </button>
+
+            <!-- ReadCard (Pastel Amber) -->
+            <button onclick="showTab('read')"
+                class="vark-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-amber-300 hover:shadow-md text-left">
+                <div class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl mb-1">Leitura/Escrita</h3>
+                <p class="text-sm text-slate-500">Aprende com textos, listas e anotações.</p>
+            </button>
+
+            <!-- Kinesthetic Card (Pastel Red) -->
+            <button onclick="showTab('kinesthetic')"
+                class="vark-card bg-white p-6 rounded-2xl shadow-sm border-b-4 border-red-300 hover:shadow-md text-left">
+                <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3.322" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl mb-1">Cinestésico</h3>
+                <p class="text-sm text-slate-500">Aprende fazendo, praticando e experienciando.</p>
+            </button>
+        </div>
+
+        <!-- Detail Section -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px]">
+            <!-- Visual Content -->
+            <div id="visual" class="tab-content p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-12">
+                    <div class="md:w-1/2">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-500 font-semibold text-sm mb-4">PERFIL
+                            VISUAL</span>
+                        <h2 class="text-3xl font-bold mb-6 text-slate-900">Foco em Representação Espacial</h2>
+                        <p class="text-slate-600 mb-6">Estudantes visuais preferem a representação de informações em
+                            mapas, diagramas, gráficos, fluxogramas e setas. Eles são ótimos em visualizar layouts e
+                            designs.</p>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-slate-800 italic">"Se eu não consigo ver, não consigo
+                                entender."</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-400 mt-1">●</span>
+                                    <span>Lê facilmente mapas e diagramas.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-400 mt-1">●</span>
+                                    <span>Gosta de usar cores para organizar ideias.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-blue-400 mt-1">●</span>
+                                    <span>Tem boa memória para rostos e locais.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-blue-50 p-8 rounded-2xl">
+                        <h3 class="font-bold text-xl mb-4 text-blue-900">Estratégias de Estudo</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-300">
+                                <p class="font-medium">Mapas Mentais</p>
+                                <p class="text-sm text-slate-500">Transforme tópicos complexos em diagramas visuais
+                                    interconectados.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-300">
+                                <p class="font-medium">Código de Cores</p>
+                                <p class="text-sm text-slate-500">Use marca-textos diferentes para conceitos, datas e
+                                    definições.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-300">
+                                <p class="font-medium">Substituição por Símbolos</p>
+                                <p class="text-sm text-slate-500">Use setas, ícones e formas em vez de frases completas
+                                    nas anotações.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aural Content -->
+            <div id="aural" class="tab-content p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-12">
+                    <div class="md:w-1/2">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-emerald-50 text-emerald-500 font-semibold text-sm mb-4">PERFIL
+                            AUDITIVO</span>
+                        <h2 class="text-3xl font-bold mb-6 text-slate-900">Foco na Linguagem Falada</h2>
+                        <p class="text-slate-600 mb-6">A preferência auditiva refere-se a pessoas que aprendem melhor
+                            ouvindo e falando. Elas se beneficiam de palestras, discussões em grupo, podcasts e chats.
+                        </p>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-slate-800 italic">"Preciso ouvir para processar os detalhes."
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 mt-1">●</span>
+                                    <span>Prefere explicações verbais a manuais escritos.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 mt-1">●</span>
+                                    <span>Gosta de ler em voz alta para entender melhor.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-emerald-400 mt-1">●</span>
+                                    <span>Frequentemente fala consigo mesmo enquanto resolve problemas.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-emerald-50 p-8 rounded-2xl">
+                        <h3 class="font-bold text-xl mb-4 text-emerald-900">Estratégias de Estudo</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-300">
+                                <p class="font-medium">Gravação de Áudio</p>
+                                <p class="text-sm text-slate-500">Grave suas próprias explicações e ouça-as no trajeto
+                                    para o trabalho/escola.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-300">
+                                <p class="font-medium">Explicação para Terceiros</p>
+                                <p class="text-sm text-slate-500">Ensine o conteúdo para um colega ou até mesmo para o
+                                    espelho.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-300">
+                                <p class="font-medium">Discussões em Grupo</p>
+                                <p class="text-sm text-slate-500">Participe ativamente de debates e rodas de conversa
+                                    sobre o tema.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Read/Write Content -->
+            <div id="read" class="tab-content p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-12">
+                    <div class="md:w-1/2">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-amber-50 text-amber-500 font-semibold text-sm mb-4">PERFIL
+                            LEITURA/ESCRITA</span>
+                        <h2 class="text-3xl font-bold mb-6 text-slate-900">Foco no Texto e Listas</h2>
+                        <p class="text-slate-600 mb-6">Esses estudantes preferem informações exibidas como palavras.
+                            Eles adoram listas, manuais, dicionários e qualquer forma de texto escrito.</p>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-slate-800 italic">"As palavras organizam meu pensamento."</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-amber-400 mt-1">●</span>
+                                    <span>Toma notas extensas durante as aulas.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-amber-400 mt-1">●</span>
+                                    <span>Prefere pesquisar informações em livros e artigos.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-amber-400 mt-1">●</span>
+                                    <span>Gosta de organizar tudo em tópicos e listas.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-amber-50 p-8 rounded-2xl">
+                        <h3 class="font-bold text-xl mb-4 text-amber-900">Estratégias de Estudo</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-300">
+                                <p class="font-medium">Reescrever Notas</p>
+                                <p class="text-sm text-slate-500">Transforme anotações de aula em resumos limpos e
+                                    estruturados.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-300">
+                                <p class="font-medium">Criação de Listas</p>
+                                <p class="text-sm text-slate-500">Organize o conhecimento em listas de "Passo a Passo"
+                                    ou "Prós e Contras".</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-300">
+                                <p class="font-medium">Flashcards de Texto</p>
+                                <p class="text-sm text-slate-500">Crie cartões com definições e conceitos escritos de
+                                    forma concisa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kinesthetic Content -->
+            <div id="kinesthetic" class="tab-content p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-12">
+                    <div class="md:w-1/2">
+                        <span
+                            class="inline-block px-3 py-1 rounded-full bg-red-50 text-red-500 font-semibold text-sm mb-4">PERFIL
+                            CINESTÉSICO</span>
+                        <h2 class="text-3xl font-bold mb-6 text-slate-900">Foco na Prática e Experiência</h2>
+                        <p class="text-slate-600 mb-6">Estudantes cinestésicos preferem aprender através da experiência
+                            e prática (simulada ou real). Eles precisam de exemplos concretos para entender a teoria.
+                        </p>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-slate-800 italic">"Eu aprendo quando coloco a mão na massa."
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-red-400 mt-1">●</span>
+                                    <span>Aprende melhor por tentativa e erro.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-red-400 mt-1">●</span>
+                                    <span>Gosta de atividades práticas, laboratórios e campo.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-red-400 mt-1">●</span>
+                                    <span>Costuma gesticular muito ao falar.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 bg-red-50 p-8 rounded-2xl">
+                        <h3 class="font-bold text-xl mb-4 text-red-900">Estratégias de Estudo</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-300">
+                                <p class="font-medium">Aulas Práticas</p>
+                                <p class="text-sm text-slate-500">Aplique a teoria em exemplos da vida real ou estudos
+                                    de caso.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-300">
+                                <p class="font-medium">Movimento Durante Estudo</p>
+                                <p class="text-sm text-slate-500">Caminhe enquanto lê ou use objetos de "fidget" para
+                                    manter o foco.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-300">
+                                <p class="font-medium">Simulações</p>
+                                <p class="text-sm text-slate-500">Use softwares de simulação ou encenações para entender
+                                    processos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-modal Message -->
+        <footer class="mt-12 text-center p-8 bg-violet-50 rounded-2xl border border-violet-100">
+            <h3 class="text-xl font-bold text-violet-900 mb-2">Você é Multimodal?</h3>
+            <p className="text-slate-600 max-w-2xl mx-auto mb-6">
+                Muitas pessoas não possuem apenas uma preferência dominante, mas sim uma combinação de duas ou mais.
+                Isso é chamado de <strong>Aprendizagem Multimodal</strong>.
+            </p>
+            <a href="/multimodal.html"
+                class="inline-block bg-violet-400 hover:bg-violet-500 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition-all text-sm">
+                Clique aqui para saber mais
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Scroll to detail section for mobile
+            if (window.innerWidth < 768) {
+                document.getElementById(tabId).scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialize with visual tab
+        window.onload = function () {
+            showTab('visual');
+        }
+    </script>
+</body>
+
+</html>
