@@ -24,7 +24,7 @@
             <header class="mb-10">
                 <div class="mb-6">
                     <a href="/dashboard.html"
-                        class="inline-flex items-center gap-2 text-violet-600 font-bold hover:text-violet-800 transition-colors">
+                        class="inline-flex items-center gap-2 text-violet-400 font-bold hover:text-violet-600 transition-colors">
                         <i data-lucide="arrow-left" class="w-5 h-5"></i>
                         Voltar
                     </a>
@@ -32,7 +32,7 @@
 
                 <div>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
-                        Metodologia VARK: <span class="text-violet-500">Multimodalidade</span>
+                        Metodologia VARK: <span class="text-violet-400">Multimodalidade</span>
                     </h1>
                     <p class="text-lg text-slate-600 max-w-3xl">
                         A maioria dos alunos não possui apenas um perfil dominante. Quando um estudante é
@@ -90,7 +90,7 @@
             <div class="grid grid-cols-1 gap-6">
                 <div class="flex items-center justify-between mb-2">
                     <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <i data-lucide="shuffle" class="w-5 h-5 text-violet-500 inline mr-2"></i>
+                        <i data-lucide="shuffle" class="w-5 h-5 text-violet-400 inline mr-2"></i>
                         Combinações 2 a 2
                     </h2>
                     <span class="text-xs font-medium bg-slate-200 text-slate-600 px-2 py-1 rounded-full uppercase">
@@ -104,19 +104,19 @@
             </div>
 
             <!-- Strategic Footer -->
-            <footer class="mt-12 p-6 bg-violet-900 rounded-2xl text-white">
-                <h3 class="text-xl font-bold mb-3 flex items-center gap-2">
-                    <i data-lucide="target" class="w-6 h-6 text-violet-300"></i>
+            <footer class="mt-12 p-6 bg-violet-50 rounded-2xl border border-violet-100 text-slate-600">
+                <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-violet-900">
+                    <i data-lucide="target" class="w-6 h-6 text-violet-400"></i>
                     Estratégia para o Professor
                 </h3>
-                <p class="text-violet-100 text-sm leading-relaxed mb-4">
+                <p class="text-sm leading-relaxed mb-4">
                     Para alunos multimodais, o segredo não é oferecer "uma coisa ou outra", mas sim
                     integrar as modalidades. Um aluno VR (Visual/Leitura) não quer apenas um vídeo
                     ou apenas um texto; ele quer um vídeo com legendas bem estruturadas ou um texto
                     com diagramas que espelham o que ele está lendo.
                 </p>
                 <div
-                    class="inline-flex items-center px-3 py-1 bg-violet-800 rounded-lg text-xs font-medium text-violet-200">
+                    class="inline-flex items-center px-3 py-1 bg-violet-100 rounded-lg text-xs font-medium text-violet-600">
                     Dica: Varie a entrega durante a mesma aula para atingir múltiplos perfis simultaneamente.
                 </div>
             </footer>
@@ -216,27 +216,27 @@
                              </section>
 
                              <div class="grid md:grid-cols-2 gap-6">
-                                 <section class="bg-slate-50 p-4 rounded-xl">
+                                 <section class="bg-violet-50 p-4 rounded-xl">
                                      <div class="flex items-center gap-2 mb-3 text-slate-800 font-semibold text-sm">
-                                         <i data-lucide="target" class="w-4 h-4 text-orange-500"></i> Como ele aprende
+                                         <i data-lucide="target" class="w-4 h-4 text-violet-400"></i> Como ele aprende
                                      </div>
                                      <ul class="space-y-2">
                                          ${combo.howTheyLearn.map(item => `
                                             <li class="text-sm text-slate-600 flex items-start gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-orange-300 mt-1.5 shrink-0"></span>${item}
+                                                <span class="w-1.5 h-1.5 rounded-full bg-violet-300 mt-1.5 shrink-0"></span>${item}
                                             </li>
                                          `).join('')}
                                      </ul>
                                  </section>
 
-                                 <section class="bg-blue-50 p-4 rounded-xl">
+                                 <section class="bg-violet-50 p-4 rounded-xl">
                                      <div class="flex items-center gap-2 mb-3 text-slate-800 font-semibold text-sm">
-                                         <i data-lucide="lightbulb" class="w-4 h-4 text-blue-500"></i> Sugestões
+                                         <i data-lucide="lightbulb" class="w-4 h-4 text-violet-400"></i> Sugestões
                                      </div>
                                      <ul class="space-y-2">
                                           ${combo.suggestions.map(item => `
                                             <li class="text-sm text-slate-700 flex items-start gap-2">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-blue-300 mt-1.5 shrink-0"></span>${item}
+                                                <span class="w-1.5 h-1.5 rounded-full bg-violet-300 mt-1.5 shrink-0"></span>${item}
                                             </li>
                                          `).join('')}
                                      </ul>
@@ -259,11 +259,11 @@
                 if (content.classList.contains('hidden')) {
                     content.classList.remove('hidden');
                     arrow.classList.add('rotate-180');
-                    header.parentElement.classList.add('shadow-lg', 'border-violet-200');
+                    header.parentElement.classList.add('shadow-lg', 'border-violet-300');
                 } else {
                     content.classList.add('hidden');
                     arrow.classList.remove('rotate-180');
-                    header.parentElement.classList.remove('shadow-lg', 'border-violet-200');
+                    header.parentElement.classList.remove('shadow-lg', 'border-violet-300');
                 }
             }
 
