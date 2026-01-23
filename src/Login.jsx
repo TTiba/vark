@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LogIn, User } from 'lucide-react';
+import { supabase } from './supabaseClient';
 
 const Login = ({ onLoginSuccess }) => {
     const [loading, setLoading] = useState(false);
@@ -7,47 +8,46 @@ const Login = ({ onLoginSuccess }) => {
 
     useEffect(() => {
         /* global google */
-        if (window.google) {
-            google.accounts.id.initialize({
-                client_id: "739830653809-vh6djiiio5o8rm0dmcjj813vqnl5cic1.apps.googleusercontent.com",
-                callback: handleCredentialResponse
-            });
-            google.accounts.id.renderButton(
-                document.getElementById("buttonDiv"),
-                { theme: "outline", size: "large" }
-            );
+        const initializeGoogle = () => {
+            if (window.google) {
+                google.accounts.id.initialize({
+                    client_id: "739830653809-vh6djiiio5o8rm0dmcjj813vqnl5cic1.apps.googleusercontent.com",
+                    callback: handleCredentialResponse
+                });
+                google.accounts.id.renderButton(
+                    document.getElementById("buttonDiv"),
+                    { theme: "outline", size: "large" }
+                );
+                return true;
+            }
+            return false;
+        };
+
+        if (!initializeGoogle()) {
+            const interval = setInterval(() => {
+                if (initializeGoogle()) {
+                    clearInterval(interval);
+                }
+            }, 500);
+            return () => clearInterval(interval);
         }
     }, []);
 
-    const handleCredentialResponse = (response) => {
+    const handleCredentialResponse = async (response) => {
         setLoading(true);
         setError('');
         try {
-            const responsePayload = decodeJwt(response.credential);
+            const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+            });
 
-            // Check domain if needed, e.g., @escola.pr.gov.br
-            if (!responsePayload.email.endsWith('@escola.pr.gov.br')) {
-                throw new Error('Acesso restrito a e-mails @escola.pr.gov.br');
-            }
+            if (error) throw error;
 
-            const user = {
-                email: responsePayload.email,
-                name: responsePayload.name,
-                picture: responsePayload.picture
-            };
-
-            // Save to local storage
-            localStorage.setItem('vark_user_session', JSON.stringify(user));
-
-            // Notify parent to update state
-            if (onLoginSuccess) {
-                onLoginSuccess(user);
-            }
-
+            // Session updates are handled by the listener in App.jsx
         } catch (e) {
             console.error("Login Error:", e);
             setError(e.message || "Erro ao processar login.");
-        } finally {
             setLoading(false);
         }
     };

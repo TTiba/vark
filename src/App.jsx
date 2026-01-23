@@ -27,6 +27,7 @@ const App = () => {
   // Persistence state
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -50,13 +51,20 @@ const App = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      // Auto-fetch results when session is established
+      if (session?.user?.email) {
+        fetchResults(session.user.email);
+      }
     });
 
-    // Check Custom Local Session
+    // Check Custom Local Session (Guest)
     const localSession = localStorage.getItem('vark_user_session');
     if (localSession) {
       try {
-        setCustomSession(JSON.parse(localSession));
+        const parsed = JSON.parse(localSession);
+        if (parsed.isGuest) {
+          setCustomSession(parsed);
+        }
       } catch (e) {
         console.error("Error parsing local session", e);
       }
@@ -67,31 +75,35 @@ const App = () => {
 
   // Load data from LocalStorage when session exists
   useEffect(() => {
-    if (session || customSession) {
-      fetchResults();
+    if (session?.user?.email) {
+      fetchResults(session.user.email);
+    } else if (customSession?.isGuest) {
+      // Fetch local results for guest
+      fetchResults(null);
     }
   }, [session, customSession]);
 
-  const getUserEmail = () => {
-    if (session?.user?.email) return session.user.email;
-    if (customSession?.email) return customSession.email;
-    return null;
-  };
+  /* Removed getUserEmail as we rely on session.user.email now */
 
-  const fetchResults = async () => {
+  const fetchResults = async (userEmail) => {
     try {
-      const email = getUserEmail();
-      if (!email) return;
-
       if (customSession?.isGuest) {
-        setResults([]);
+        const localData = localStorage.getItem('vark_results_data');
+        setResults(localData ? JSON.parse(localData) : []);
         return;
       }
 
-      const key = `vark_results_${email}`;
-      const localData = localStorage.getItem(key);
-      const data = localData ? JSON.parse(localData) : [];
-      setResults(data);
+      const email = userEmail || session?.user?.email;
+      if (!email) return;
+
+      const { data, error } = await supabase
+        .from('vark_results')
+        .select('*')
+        .eq('user_email', email)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setResults(data || []);
     } catch (error) {
       console.error('Erro ao buscar resultados:', error.message);
     }
@@ -116,21 +128,30 @@ const App = () => {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
     localStorage.removeItem('vark_user_session');
     setCustomSession(null);
     setResults([]);
     setCurrentResult(null);
+    window.location.reload(); // Force reload to clear all state
   };
 
   const onLoginSuccess = (user) => {
     setCustomSession(user);
   };
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = getUserEmail();
+    const isGuest = customSession?.isGuest;
+    const email = session?.user?.email || (isGuest ? 'guest' : null);
+
     if (!email) {
       alert("Erro de sessão. Por favor, faça login novamente.");
       return;
@@ -162,42 +183,67 @@ const App = () => {
 
     // Prepare data object
     const newEntry = {
-      id: Date.now(), // Generate ID
-      name: formData.name,
+      // id: handled by DB (auto-increment) or UUID
+      user_email: email,
+      // user_name: session.user.user_metadata.full_name || email, // Optional: store user name who created it
+      user_name: formData.name, // The name of the person evaluated - FIXED: match column name in DB
       scores,
       percentages,
-      timestamp: new Date().toLocaleString()
+      // timestamp: handled by DB (created_at)
     };
 
+    // Prepare chart data for this specific entry (Client side visualization)
+    const chartData = [
+      { name: LABELS.A, value: scores.A, color: COLORS.A },
+      { name: LABELS.B, value: scores.B, color: COLORS.B },
+      { name: LABELS.C, value: scores.C, color: COLORS.C },
+      { name: LABELS.D, value: scores.D, color: COLORS.D },
+    ].filter(item => item.value > 0);
+
     try {
-      // Save to Local Storage
-      const existingData = localStorage.getItem('vark_results_data');
-      const resultsArray = existingData ? JSON.parse(existingData) : [];
+      if (isGuest) {
+        // GUEST: Save to Local Storage
+        const existingData = localStorage.getItem('vark_results_data');
+        const resultsArray = existingData ? JSON.parse(existingData) : [];
 
-      // Add new entry to the beginning
-      const updatedResults = [newEntry, ...resultsArray];
-      localStorage.setItem('vark_results_data', JSON.stringify(updatedResults));
+        const guestEntry = { ...newEntry, id: Date.now(), created_at: new Date().toISOString() };
+        const updatedResults = [guestEntry, ...resultsArray];
+        localStorage.setItem('vark_results_data', JSON.stringify(updatedResults));
 
-      // Prepare chart data for this specific entry (Client side visualization)
-      const chartData = [
-        { name: LABELS.A, value: scores.A, color: COLORS.A },
-        { name: LABELS.B, value: scores.B, color: COLORS.B },
-        { name: LABELS.C, value: scores.C, color: COLORS.C },
-        { name: LABELS.D, value: scores.D, color: COLORS.D },
-      ].filter(item => item.value > 0);
+        setCurrentResult({
+          ...guestEntry,
+          timestamp: new Date().toLocaleString(),
+          chartData
+        });
+        setResults(updatedResults); // Direct update
+      } else {
+        // AUTHENTICATED: Save to Supabase
+        const { data, error } = await supabase
+          .from('vark_results')
+          .insert([newEntry])
+          .select();
 
-      // Set current result to show graph
-      setCurrentResult({ ...newEntry, chartData });
+        if (error) throw error;
 
-      // Refresh list
-      setResults(updatedResults);
+        const savedEntry = data[0];
+
+        // Set current result to show graph. Use DB entry + local chartData
+        setCurrentResult({
+          ...savedEntry,
+          timestamp: new Date(savedEntry.created_at).toLocaleString(), // Format date for display
+          chartData
+        });
+
+        // Refresh list
+        fetchResults(email);
+      }
 
       // Clear form inputs
       setFormData({ name: '', a: '', b: '', c: '', d: '' });
 
     } catch (error) {
-      console.error('Erro ao salvar resultado:', error.message);
-      alert('Erro ao salvar os dados. Tente novamente.');
+      console.error('Erro ao salvar resultado:', error);
+      setSaveError(error.message || JSON.stringify(error));
     } finally {
       setLoading(false);
     }
@@ -248,6 +294,11 @@ const App = () => {
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-violet-500">
               <Activity /> Inserir Dados
             </h2>
+            {saveError && (
+              <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg border border-red-200" role="alert">
+                <strong className="font-bold">Erro ao salvar:</strong> {saveError}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
@@ -316,7 +367,7 @@ const App = () => {
               </div>
             ) : (
               <div className="w-full h-full flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <h3 className="text-xl font-bold text-slate-800 mb-2">Perfil de {currentResult.name}</h3>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">Perfil de {currentResult.user_name || currentResult.name}</h3>
                 <div className="w-full h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -426,8 +477,8 @@ const App = () => {
                 ) : (
                   results.map((entry) => (
                     <tr key={entry.id || Math.random()} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-slate-800">{entry.name}</td>
-                      <td className="px-6 py-4 text-slate-500">{entry.timestamp}</td>
+                      <td className="px-6 py-4 font-bold text-slate-800">{entry.user_name || entry.name}</td>
+                      <td className="px-6 py-4 text-slate-500">{new Date(entry.created_at).toLocaleString()}</td>
                       <td className="px-6 py-4 font-mono">{entry.percentages.A}%</td>
                       <td className="px-6 py-4 font-mono">{entry.percentages.B}%</td>
                       <td className="px-6 py-4 font-mono">{entry.percentages.C}%</td>
