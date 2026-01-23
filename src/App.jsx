@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { Send, Users, Activity, BarChart3, Save, BookOpen } from 'lucide-react';
+import { Send, Users, Activity, BarChart3, Save, BookOpen, Loader2, LogOut, Download } from 'lucide-react';
+import { supabase } from './supabaseClient';
+import Login from './Login';
 
 // Design aesthetics and constants - Pastel Colors
 const COLORS = {
@@ -18,8 +20,13 @@ const LABELS = {
 };
 
 const App = () => {
+  // Session state
+  const [session, setSession] = useState(null);
+  const [customSession, setCustomSession] = useState(null);
+
   // Persistence state
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -33,13 +40,62 @@ const App = () => {
   // Current session result for immediate feedback
   const [currentResult, setCurrentResult] = useState(null);
 
-  // Load data from localStorage on mount
   useEffect(() => {
-    const savedResults = localStorage.getItem('vark_results');
-    if (savedResults) {
-      setResults(JSON.parse(savedResults));
+    // Check Supabase Session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    // Check Custom Local Session
+    const localSession = localStorage.getItem('vark_user_session');
+    if (localSession) {
+      try {
+        setCustomSession(JSON.parse(localSession));
+      } catch (e) {
+        console.error("Error parsing local session", e);
+      }
     }
+
+    return () => subscription.unsubscribe();
   }, []);
+
+  // Load data from LocalStorage when session exists
+  useEffect(() => {
+    if (session || customSession) {
+      fetchResults();
+    }
+  }, [session, customSession]);
+
+  const getUserEmail = () => {
+    if (session?.user?.email) return session.user.email;
+    if (customSession?.email) return customSession.email;
+    return null;
+  };
+
+  const fetchResults = async () => {
+    try {
+      const email = getUserEmail();
+      if (!email) return;
+
+      if (customSession?.isGuest) {
+        setResults([]);
+        return;
+      }
+
+      const key = `vark_results_${email}`;
+      const localData = localStorage.getItem(key);
+      const data = localData ? JSON.parse(localData) : [];
+      setResults(data);
+    } catch (error) {
+      console.error('Erro ao buscar resultados:', error.message);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,8 +115,26 @@ const App = () => {
     };
   };
 
-  const handleSubmit = (e) => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem('vark_user_session');
+    setCustomSession(null);
+    setResults([]);
+    setCurrentResult(null);
+  };
+
+  const onLoginSuccess = (user) => {
+    setCustomSession(user);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const email = getUserEmail();
+    if (!email) {
+      alert("Erro de sessão. Por favor, faça login novamente.");
+      return;
+    }
 
     // Parse inputs
     const scores = {
@@ -82,39 +156,78 @@ const App = () => {
       return;
     }
 
+    setLoading(true);
+
     const percentages = calculatePercentages(scores);
 
     // Prepare data object
     const newEntry = {
-      id: Date.now(),
+      id: Date.now(), // Generate ID
       name: formData.name,
       scores,
       percentages,
       timestamp: new Date().toLocaleString()
     };
 
-    // Prepare chart data for this specific entry
-    const chartData = [
-      { name: LABELS.A, value: scores.A, color: COLORS.A },
-      { name: LABELS.B, value: scores.B, color: COLORS.B },
-      { name: LABELS.C, value: scores.C, color: COLORS.C },
-      { name: LABELS.D, value: scores.D, color: COLORS.D },
-    ].filter(item => item.value > 0); // Only show segments with > 0 values
+    try {
+      // Save to Local Storage
+      const existingData = localStorage.getItem('vark_results_data');
+      const resultsArray = existingData ? JSON.parse(existingData) : [];
 
-    // Save
-    const updatedResults = [newEntry, ...results];
-    setResults(updatedResults);
-    localStorage.setItem('vark_results', JSON.stringify(updatedResults));
+      // Add new entry to the beginning
+      const updatedResults = [newEntry, ...resultsArray];
+      localStorage.setItem('vark_results_data', JSON.stringify(updatedResults));
 
-    // Set current result to show graph
-    setCurrentResult({ ...newEntry, chartData });
+      // Prepare chart data for this specific entry (Client side visualization)
+      const chartData = [
+        { name: LABELS.A, value: scores.A, color: COLORS.A },
+        { name: LABELS.B, value: scores.B, color: COLORS.B },
+        { name: LABELS.C, value: scores.C, color: COLORS.C },
+        { name: LABELS.D, value: scores.D, color: COLORS.D },
+      ].filter(item => item.value > 0);
 
-    // Clear form inputs but keep the result view active
-    setFormData({ name: '', a: '', b: '', c: '', d: '' });
+      // Set current result to show graph
+      setCurrentResult({ ...newEntry, chartData });
+
+      // Refresh list
+      setResults(updatedResults);
+
+      // Clear form inputs
+      setFormData({ name: '', a: '', b: '', c: '', d: '' });
+
+    } catch (error) {
+      console.error('Erro ao salvar resultado:', error.message);
+      alert('Erro ao salvar os dados. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // If NO session (Supabase or Custom), show Login
+  if (!session && !customSession) {
+    return <Login onLoginSuccess={onLoginSuccess} />;
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans p-6 md:p-12">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans p-6 md:p-12 relative">
+
+      {/* Logout Button */}
+      <div className="absolute top-6 right-6 flex gap-3">
+        <a
+          href="/VARK_CA_Wayground.pdf"
+          download="VARK_CA_Wayground.pdf"
+          className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-violet-500 transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm"
+        >
+          <Download size={16} /> Download Avaliação
+        </a>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-red-500 transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm"
+        >
+          <LogOut size={16} /> Sair
+        </button>
+      </div>
+
       <div className="max-w-5xl mx-auto space-y-12">
 
         {/* Header */}
@@ -143,7 +256,8 @@ const App = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-4 focus:ring-violet-100 focus:border-violet-400 transition-all outline-none"
+                  disabled={loading}
+                  className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-4 focus:ring-violet-100 focus:border-violet-400 transition-all outline-none disabled:opacity-50"
                   placeholder="Ex: Maria Silva"
                 />
               </div>
@@ -169,7 +283,8 @@ const App = () => {
                       onChange={handleInputChange}
                       min="0"
                       max="16"
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 transition-all outline-none"
+                      disabled={loading}
+                      className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 transition-all outline-none disabled:opacity-50"
                       placeholder="0"
                     />
                   </div>
@@ -179,9 +294,11 @@ const App = () => {
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-violet-400 hover:bg-violet-500 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="w-full bg-violet-400 hover:bg-violet-500 disabled:bg-violet-300 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
                 >
-                  <Send size={20} /> Compartilhar Resultados
+                  {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+                  {loading ? 'Salvando...' : 'Compartilhar Resultados'}
                 </button>
                 <p className="text-xs text-center text-slate-400 mt-3">
                   Certifique-se de que a soma dos pontos seja igual a 16.
@@ -308,7 +425,7 @@ const App = () => {
                   </tr>
                 ) : (
                   results.map((entry) => (
-                    <tr key={entry.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={entry.id || Math.random()} className="hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 font-bold text-slate-800">{entry.name}</td>
                       <td className="px-6 py-4 text-slate-500">{entry.timestamp}</td>
                       <td className="px-6 py-4 font-mono">{entry.percentages.A}%</td>
