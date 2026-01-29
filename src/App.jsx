@@ -260,8 +260,8 @@ const App = () => {
       {/* Logout Button */}
       <div className="absolute top-6 right-6 flex gap-3">
         <a
-          href="/VARK_CA_Wayground.pdf"
-          download="VARK_CA_Wayground.pdf"
+          href="/Avaliação Diagnóstica VARK.pdf"
+          download="Avaliação Diagnóstica VARK.pdf"
           className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-violet-500 transition-colors bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm"
         >
           <Download size={16} /> Download Avaliação
